@@ -1,0 +1,91 @@
+---
+title: 'Project 1: Wrangling, Exploration, Visualization'
+author: "SDS322E"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+## Data Wrangling, Exploration, Visualization
+
+### Name and EID here
+
+#### Introduction 
+
+Paragraph or two introducing your datasets and variables, why they are interesting to you, etc.
+
+```{R}
+# read your datasets in here, e.g., with read_csv()
+
+```
+
+#### Tidying: Reshaping
+
+If your datasets are tidy already, demonstrate that you can reshape data with pivot wider/longer here (e.g., untidy and then retidy). Alternatively, it may be easier to wait until the wrangling section so you can reshape your summary statistics. Note here if you are going to do this.
+
+```{R}
+# your tidying code (if applicable; can also wait until wrangling section)
+```
+
+    
+#### Joining/Merging
+
+```{R}
+# your joining code
+
+# your joining code
+```
+
+Discussions of joining here. Feel encouraged to break up into more than once code chunk and discuss each in turn.
+
+####  Wrangling
+
+```{R}
+# your wrangling code
+
+# your wrangling code
+
+# your wrangling code
+```
+
+Your discussion of wrangling section here. Feel encouraged to break up into more than once code chunk and discuss each in turn.
+
+
+#### Visualizing
+
+```{R}
+# your plot 1
+```
+
+Your discussion of plot 1
+
+```{R}
+# your plot 2
+```
+
+Your discussion of plot 2
+
+```{R}
+# your plot 3
+```
+
+Your discussion of plot 3
+
+#### Concluding Remarks
+
+If any!
+
+
+
+
