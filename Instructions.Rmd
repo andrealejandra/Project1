@@ -168,7 +168,6 @@ https://github.com/YOUR_USERNAME/project1/settings/pages. Then, select the main 
 - Your project MUST be live at YOUR_USERNAME.github.io/project1 to receive a grade. Failure to do this before the due date will result in a late deduction.
 
 
-
 ### Where do I find data?
 
 OK, brace yourself!
