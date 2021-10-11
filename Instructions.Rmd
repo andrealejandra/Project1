@@ -23,9 +23,9 @@ tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 
 Your project will be completed in a single Rmd file called index.Rmd. Clone the following repository, which contains the instructions and template: https://github.com/nathanielwoodward/project1.git
 
-When you have finished your project, save all changes and
+When you have finished your project, save all changes and knit the project to HTML.
 
-Submit a link to the Github repository containing your project to Canvas before the due date. Your project should also be live at your_username.github.io/project1 and linked to from your homepage. See the last step (6) in this document for how to set this up. Failure to have this done before the deadline will result in a late deduction. 
+Submit a link to the Github repository containing your project to Canvas before the due date. Your project should also be live at your_username.github.io/project1 and linked to from the portfolio page on your website. See the last step (6) in this document for how to set this up. Failure to have this done before the deadline will result in a late deduction. 
 
 The text of your project document will provide a narrative structure around your code/output. All results presented must have corresponding code. Any answers/results/plots etc. given without the corresponding R code that generated the result will not be considered. Furthermore, all code contained in your final project document must work correctly (knit early, knit often)! Please do not include any extraneous code (code that produces warnings is acceptable, as long as you understand what the warnings mean!)
 
@@ -169,7 +169,7 @@ Prerequisite: Finding appropriate data from at least two sources per the instruc
 cd ~/project1 #cd to your project1 directory
 git add .
 git commit -m "message"
-git remote add origin https://github.com/YOUR_USERNAME/project1.git
+git remote set-url origin https://github.com/YOUR_USERNAME/project1.git
 git push origin main
 ```
 
