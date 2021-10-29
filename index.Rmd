@@ -17,16 +17,20 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = 
 tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 ```
 
-## Data Wrangling, Exploration, Visualization
+## Mortality in the US
 
-### Name and EID here
+### Andrea Virgen AAV782
 
 #### Introduction 
 
-Paragraph or two introducing your datasets and variables, why they are interesting to you, etc.
+My two datasets are Covid-19-centric. Dataset 1 (covid) compares the incidence of pneumonia, Covid-19, influenza and their proportion of the total deaths per age group and race/Hispanic origin. Dataset 2 (all_causes) examines the incidence of different diseases compared to Covid-19 by age-group and region. 
 
 ```{R}
-# read your datasets in here, e.g., with read_csv()
+library(readr)
+library(tidyverse)
+
+covid <- read_csv("Provisional_COVID-19_Deaths_by_Race_and_Hispanic_Origin__and_Age.csv")
+all_causes <- read_csv("AH_Monthly_Provisional_Counts_of_Deaths_by_Age_Group_and_HHS_region_for_Select_Causes_of_Death__2019-2021.csv")
 
 ```
 
@@ -35,7 +39,8 @@ Paragraph or two introducing your datasets and variables, why they are interesti
 If your datasets are tidy already, demonstrate that you can reshape data with pivot wider/longer here (e.g., untidy and then retidy). Alternatively, it may be easier to wait until the wrangling section so you can reshape your summary statistics. Note here if you are going to do this.
 
 ```{R}
-# your tidying code (if applicable; can also wait until wrangling section)
+glimpse(covid)
+glimpse(all_causes)
 ```
 
     
