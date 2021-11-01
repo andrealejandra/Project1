@@ -17,42 +17,93 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = 
 tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 ```
 
-## Mortality in the US
+## Health Indicators in Texas Counties
 
 ### Andrea Virgen AAV782
 
 #### Introduction 
 
-My two datasets are Covid-19-centric. Dataset 1 (covid) compares the incidence of pneumonia, Covid-19, influenza and their proportion of the total deaths per age group and race/Hispanic origin. Dataset 2 (all_causes) examines the incidence of different diseases compared to Covid-19 by age-group and region. 
+I'm interested to see how and if there are correlations between obesity rates, diabetes, and rates of sufficient physical activity. I would infer that counties with the highest rates of obesity and diabetes would have lower life expectancy, but it remains to be seen if higher rates of sufficient exercise compensates for these rates. The first dataset(phys) shows percentage prevalence of each location's population that achieves a sufficient amount of physical activity - specificity of measurement or sample size is unknown. The second dataset(obesity) shows percentage prevalence of obesity(criteria not given), normalized by age. The third dataset(diabetes) houses the percentage of people who reported a formal diagnosis or elevated levels of FPG/A1C, standardized by age. The final dataset(life) houses life expectancies by county.
 
 ```{R}
 library(readr)
 library(tidyverse)
+library(readxl)
 
-covid <- read_csv("Provisional_COVID-19_Deaths_by_Race_and_Hispanic_Origin__and_Age.csv")
-all_causes <- read_csv("AH_Monthly_Provisional_Counts_of_Deaths_by_Age_Group_and_HHS_region_for_Select_Causes_of_Death__2019-2021.csv")
+phys <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEXAS.xls", 
+    sheet = "Physical Activity")
+
+obesity <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEXAS.xls", 
+    sheet = "Obesity")
+
+diabetes <- read_excel("IHME_county_data_Diabetes_TEXAS.xlsx", 
+    sheet = "Total")
+
+life <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEXAS.xls", 
+    sheet = "Life Expectancy")
 
 ```
 
 #### Tidying: Reshaping
 
-If your datasets are tidy already, demonstrate that you can reshape data with pivot wider/longer here (e.g., untidy and then retidy). Alternatively, it may be easier to wait until the wrangling section so you can reshape your summary statistics. Note here if you are going to do this.
+Because these datasets have one numeric variable each, I am reshaping them to be combined on the basis of Location, Sex, and Year. The life expectancy(life) dataset was collected from years that do not overlap with the data from the other three datasets, so I will be taking the average from the data available for a later comparison with the other variables.
 
 ```{R}
-glimpse(covid)
-glimpse(all_causes)
+
+life %>%
+  select(-14:15) %>%
+  pivot_longer(-1, names_to="desc", values_to="Life Expectancy") %>%
+  rename("Location" = "State/County") %>%
+  separate(desc, into = c("desc2", "Year"), sep=", ") %>%
+  separate(desc2, into=c("Sex", NA)) %>%
+  filter(Sex!="Difference") %>%
+  group_by(Location, Sex) %>%
+  transmute("Avg Life Expectancy"= sum(`Life Expectancy`)/n()) %>%
+  distinct() -> life
+
+phys %>%
+  select(1:7)%>%
+  pivot_longer(c(2:7), names_to = "desc", values_to= "Percent Active") %>%
+  separate(desc, into=c("desc2", "year"), sep=", ") %>%
+  separate(desc2, into =c("Sex",NA,NA,NA,NA)) %>%
+  separate(year, into="Year") %>%
+  rename(Location = "State/County") -> phys
+
+obesity %>%
+  select(1:7) %>%
+  pivot_longer(c(2:7), names_to = "desc", values_to= "Percent Obese") %>%
+  separate(desc, into =c("desc2", "Year"), sep=", ") %>%
+  separate(desc2, into=c("Sex", NA, NA)) %>%
+  separate(Year, into="Year") %>%
+  rename(Location = "State/County") -> obesity
+
+
+diabetes %>%
+  pivot_longer(3:47, names_to = "desc", values_to= "Percent Diabetic") %>%
+  separate(desc, into = c(NA, "Year", "Sex")) %>%
+  separate(Sex, into = c("Sex", NA), sep="s") %>%
+  select(c(1, 3:5)) %>%
+  filter(Sex!="Both") %>%
+  filter(Year==c("2001", "2009", "2011")) %>%
+  separate(Location, into=c("Location", NA)) -> diabetes
+  
 ```
 
     
 #### Joining/Merging
 
 ```{R}
-# your joining code
+glimpse(diabetes)
+glimpse(obesity)
+full_join(obesity, diabetes, by=c("Year", "Sex", "Location")) 
+# left_join(phys, life, by=c("Location", "Sex")) %>% 
+#   left_join(inner, by=c("Location", "Year", "Sex"))
 
-# your joining code
+  
+
 ```
 
-Discussions of joining here. Feel encouraged to break up into more than once code chunk and discuss each in turn.
+The obesity and diabetes datasets are the most similar..
 
 ####  Wrangling
 
