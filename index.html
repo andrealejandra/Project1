@@ -1574,48 +1574,21 @@ obesity &lt;- obesity %&gt;% select(1:7) %&gt;% pivot_longer(c(2:7), names_to = 
     &quot;Year&quot;), sep = &quot;, &quot;) %&gt;% separate(desc2, into = c(&quot;Sex&quot;, 
     NA, NA)) %&gt;% separate(Year, into = &quot;Year&quot;) %&gt;% rename(Location = &quot;State/County&quot;)
 
-
-diabetes &lt;- diabetes %&gt;% pivot_longer(3:47, names_to = &quot;desc&quot;, 
-    values_to = &quot;Percent Diabetic&quot;) %&gt;% separate(desc, into = c(NA, 
-    &quot;Year&quot;, &quot;Sex&quot;)) %&gt;% separate(Sex, into = c(&quot;Sex&quot;, NA), sep = &quot;s&quot;) %&gt;% 
-    select(c(1, 3:5)) %&gt;% filter(Sex != &quot;Both&quot;) %&gt;% filter(Year == 
-    c(&quot;2001&quot;, &quot;2009&quot;, &quot;2011&quot;)) %&gt;% separate(Location, into = c(&quot;Location&quot;, 
-    NA))</code></pre>
+# diabetes %&gt;% pivot_wider(names_from = &#39;Location&#39;,
+# values_from=&#39;FIPS&#39;) %&gt;% rename(&#39;United States&#39; =
+# &#39;National&#39;) %&gt;% pivot_longer(&#39;United States&#39;:&#39;Zavala
+# County&#39;, names_to=&#39;Location&#39;, values_to=&#39;FIPS&#39;) %&gt;%
+# pivot_longer(1:45, names_to = &#39;desc&#39;, values_to= &#39;Percent
+# Diabetic&#39;) %&gt;% separate(desc, into = c(NA, &#39;Year&#39;, &#39;Sex&#39;))
+# %&gt;% separate(Sex, into = c(&#39;Sex&#39;, NA), sep=&#39;s&#39;) %&gt;%
+# separate(Location, into =c(&#39;Location&#39;, NA), sep=&#39; County&#39;)
+# %&gt;% select(1, 3:5)-&gt; diabetes</code></pre>
 </div>
 <div id="joiningmerging" class="section level4">
 <h4>Joining/Merging</h4>
-<pre class="r"><code>glimpse(diabetes)</code></pre>
-<pre><code>## Rows: 510
-## Columns: 4
-## $ Location           &lt;chr&gt; &quot;Texas&quot;, &quot;Texas&quot;, &quot;Texas&quot;, &quot;Anderson&quot;, &quot;Anderson&quot;,…
-## $ Year               &lt;chr&gt; &quot;2001&quot;, &quot;2009&quot;, &quot;2011&quot;, &quot;2001&quot;, &quot;2009&quot;, &quot;2011&quot;, &quot;2…
-## $ Sex                &lt;chr&gt; &quot;Male&quot;, &quot;Male&quot;, &quot;Male&quot;, &quot;Female&quot;, &quot;Female&quot;, &quot;Femal…
-## $ `Percent Diabetic` &lt;dbl&gt; 13.78, 17.11, 17.65, 11.46, 14.52, 14.50, 13.87, 1…</code></pre>
-<pre class="r"><code>glimpse(obesity)</code></pre>
-<pre><code>## Rows: 1,554
-## Columns: 4
-## $ Location        &lt;chr&gt; &quot;United States&quot;, &quot;United States&quot;, &quot;United States&quot;, &quot;U…
-## $ Sex             &lt;chr&gt; &quot;Male&quot;, &quot;Female&quot;, &quot;Male&quot;, &quot;Female&quot;, &quot;Male&quot;, &quot;Female&quot;,…
-## $ Year            &lt;chr&gt; &quot;2001&quot;, &quot;2001&quot;, &quot;2009&quot;, &quot;2009&quot;, &quot;2011&quot;, &quot;2011&quot;, &quot;2001…
-## $ `Percent Obese` &lt;dbl&gt; 26.1, 28.7, 32.8, 35.1, 33.8, 36.1, 27.7, 31.3, 34.9,…</code></pre>
-<pre class="r"><code>full_join(obesity, diabetes, by = c(&quot;Year&quot;, &quot;Sex&quot;, &quot;Location&quot;))</code></pre>
-<pre><code>## # A tibble: 1,575 x 5
-##    Location      Sex    Year  `Percent Obese` `Percent Diabetic`
-##    &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;           &lt;dbl&gt;              &lt;dbl&gt;
-##  1 United States Male   2001             26.1               NA  
-##  2 United States Female 2001             28.7               NA  
-##  3 United States Male   2009             32.8               NA  
-##  4 United States Female 2009             35.1               NA  
-##  5 United States Male   2011             33.8               NA  
-##  6 United States Female 2011             36.1               NA  
-##  7 Texas         Male   2001             27.7               13.8
-##  8 Texas         Female 2001             31.3               NA  
-##  9 Texas         Male   2009             34.9               17.1
-## 10 Texas         Female 2009             38                 NA  
-## # … with 1,565 more rows</code></pre>
-<pre class="r"><code># left_join(phys, life, by=c(&#39;Location&#39;, &#39;Sex&#39;)) %&gt;%
-# left_join(inner, by=c(&#39;Location&#39;, &#39;Year&#39;, &#39;Sex&#39;))</code></pre>
-<p>The obesity and diabetes datasets are the most similar..</p>
+<pre class="r"><code>health_indicators &lt;- inner_join(phys, obesity, by = c(&quot;Location&quot;, 
+    &quot;Sex&quot;, &quot;Year&quot;)) %&gt;% left_join(life, by = c(&quot;Location&quot;, &quot;Sex&quot;))</code></pre>
+<p>Because phys and obesity are the same length, I can perform an inner join without losing any data. My life dataset is averages over a span of 25 years, so I will have repeated numbers for each Location after perfoming a left join to the previous inner-joined dataset.</p>
 </div>
 <div id="wrangling" class="section level4">
 <h4>Wrangling</h4>

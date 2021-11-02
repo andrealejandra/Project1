@@ -77,15 +77,16 @@ obesity %>%
   separate(Year, into="Year") %>%
   rename(Location = "State/County") -> obesity
 
+# diabetes %>%
+#   pivot_wider(names_from = "Location", values_from="FIPS") %>%
+#   rename("United States" = "National") %>%
+#   pivot_longer("United States":"Zavala County", names_to="Location", values_to="FIPS") %>%
+#   pivot_longer(1:45, names_to = "desc", values_to= "Percent Diabetic") %>%
+#   separate(desc, into = c(NA, "Year", "Sex")) %>%
+#   separate(Sex, into = c("Sex", NA), sep="s") %>%
+#   separate(Location, into =c("Location", NA), sep=" County") %>%
+#   select(1, 3:5)-> diabetes
 
-diabetes %>%
-  pivot_longer(3:47, names_to = "desc", values_to= "Percent Diabetic") %>%
-  separate(desc, into = c(NA, "Year", "Sex")) %>%
-  separate(Sex, into = c("Sex", NA), sep="s") %>%
-  select(c(1, 3:5)) %>%
-  filter(Sex!="Both") %>%
-  filter(Year==c("2001", "2009", "2011")) %>%
-  separate(Location, into=c("Location", NA)) -> diabetes
   
 ```
 
@@ -93,17 +94,14 @@ diabetes %>%
 #### Joining/Merging
 
 ```{R}
-glimpse(diabetes)
-glimpse(obesity)
-full_join(obesity, diabetes, by=c("Year", "Sex", "Location")) 
-# left_join(phys, life, by=c("Location", "Sex")) %>% 
-#   left_join(inner, by=c("Location", "Year", "Sex"))
+inner_join(phys, obesity, by=c("Location", "Sex", "Year")) %>%
+  left_join(life, by=c("Location", "Sex")) -> health_indicators
 
   
 
 ```
 
-The obesity and diabetes datasets are the most similar..
+Because phys and obesity are the same length, I can perform an inner join without losing any data. My life dataset is averages over a span of 25 years, so I will have repeated numbers for each Location after perfoming a left join to the previous inner-joined dataset.
 
 ####  Wrangling
 
