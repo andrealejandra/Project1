@@ -148,32 +148,34 @@ comparison %>%
 
 ```
 
-Your discussion of wrangling section here. Feel encouraged to break up into more than once code chunk and discuss each in turn.
 
 
 #### Visualizing
 
 ```{R}
-# your plot 1
+health_indicators %>%
+  ggplot(aes(`Avg Life Expectancy`, `Percent Active`, color=Sex)) + geom_point() + scale_color_brewer(palette="Set1") + geom_smooth() + xlab("Average Life Expectancy (1985 - ")
 ```
 
 Your discussion of plot 1
 
 ```{R}
-# your plot 2
+comparison %>%
+  ggplot(aes(`Higher Percent`, fill = `Higher Percent`)) + geom_bar() + theme_dark() + ylab("Number of Counties") + xlab("Larger Percent of Population") + facet_grid(~Year)
 ```
 
 Your discussion of plot 2
 
 ```{R}
-# your plot 3
+health_indicators %>%
+  ggplot(aes(`Percent Obese`, fill = Year)) + geom_density() + xlab("Percent of Population Considered Obese") + facet_grid(~Sex)
 ```
 
 Your discussion of plot 3
 
 #### Concluding Remarks
 
-If any!
+
 
 
 
