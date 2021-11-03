@@ -23,7 +23,7 @@ tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 
 #### Introduction 
 
-I'm interested to see how and if there are correlations between obesity rates, diabetes, and rates of sufficient physical activity. I would infer that counties with the highest rates of obesity and diabetes would have lower life expectancy, but it remains to be seen if higher rates of sufficient exercise compensates for these rates. The first dataset(phys) shows percentage prevalence of each location's population that achieves a sufficient amount of physical activity - specificity of measurement or sample size is unknown. The second dataset(obesity) shows percentage prevalence of obesity(criteria not given), normalized by age. The third dataset(diabetes) houses the percentage of people who reported a formal diagnosis or elevated levels of FPG/A1C, standardized by age. The final dataset(life) houses life expectancies by county.
+I'm interested to see how and if there are correlations between rates of obesity and sufficient physical activity in regards to life expectancy. I would infer that counties with the highest rates of obesity would have lower life expectancy, but it remains to be seen if higher rates of sufficient exercise compensates for these rates. The first dataset(phys) shows percentage prevalence of each location's population that achieves a sufficient amount of physical activity - specificity of measurement or sample size is unknown. The second dataset(obesity) shows percentage prevalence of obesity(criteria not given), normalized by age. The final dataset(life) houses life expectancies by county.
 
 ```{R}
 library(readr)
@@ -35,9 +35,6 @@ phys <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEX
 
 obesity <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEXAS.xls", 
     sheet = "Obesity")
-
-diabetes <- read_excel("IHME_county_data_Diabetes_TEXAS.xlsx", 
-    sheet = "Total")
 
 life <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEXAS.xls", 
     sheet = "Life Expectancy")
@@ -77,16 +74,6 @@ obesity %>%
   separate(Year, into="Year") %>%
   rename(Location = "State/County") -> obesity
 
-# diabetes %>%
-#   pivot_wider(names_from = "Location", values_from="FIPS") %>%
-#   rename("United States" = "National") %>%
-#   pivot_longer("United States":"Zavala County", names_to="Location", values_to="FIPS") %>%
-#   pivot_longer(1:45, names_to = "desc", values_to= "Percent Diabetic") %>%
-#   separate(desc, into = c(NA, "Year", "Sex")) %>%
-#   separate(Sex, into = c("Sex", NA), sep="s") %>%
-#   separate(Location, into =c("Location", NA), sep=" County") %>%
-#   select(1, 3:5)-> diabetes
-
   
 ```
 
@@ -109,7 +96,8 @@ Because phys and obesity are the same length, I can perform an inner join withou
 
 health_indicators %>%
   na.omit -> health_indicators
-# highest life expectancy
+
+# highest life expectancy for males
 health_indicators %>%
   arrange(desc(`Avg Life Expectancy`)) %>%
   select(1:2, 6) %>%
@@ -117,6 +105,7 @@ health_indicators %>%
   filter(Sex=="Male") %>%
   distinct()
 
+# highest life expectancy for females
 health_indicators %>%
   arrange(desc(`Avg Life Expectancy`)) %>%
   select(1:2, 6) %>%
@@ -143,7 +132,9 @@ health_indicators %>%
 comparison %>%
   filter(`Higher Percent` == "Obese") %>%
   arrange(desc(`Percent Obese`)) %>%
-  str_match_all("20[0-9]{2}") 
+  str_match_all("20[0-9]{2}") %>%
+  unlist() %>%
+  table()
 
 
 ```
@@ -154,27 +145,30 @@ comparison %>%
 
 ```{R}
 health_indicators %>%
-  ggplot(aes(`Avg Life Expectancy`, `Percent Active`, color=Sex)) + geom_point() + scale_color_brewer(palette="Set1") + geom_smooth() + xlab("Average Life Expectancy (1985 - ")
+  ggplot(aes(`Avg Life Expectancy`, `Percent Active`, color=Sex)) + geom_point() + scale_color_brewer(palette="Set1") + geom_smooth() + xlab("Average Life Expectancy (1985 - 2010)") + ylab("Percent Active (2001, 2009, 2011)")
 ```
+Here I am examining the correlation between percent of population that is sufficiently active and life expectancy averaged from data points taken in 5 year intervals from 1985 - 2010. A few interesting takeaways: although there is a noticeable correlation between size of active sub-population and the overall life expectancy of males in each county, females greatly exceed male life expectancy with minimal overlap; even though larger sub-populations of males get more physical activity overall, women still have much higher life expectancy across each county; there is also an odd drop off in size of sub-population that gets sufficient physical activity and the average life expectancy in a few counties.
 
-Your discussion of plot 1
 
 ```{R}
 comparison %>%
-  ggplot(aes(`Higher Percent`, fill = `Higher Percent`)) + geom_bar() + theme_dark() + ylab("Number of Counties") + xlab("Larger Percent of Population") + facet_grid(~Year)
+  ggplot(aes(`Higher Percent`, fill = `Higher Percent`)) + geom_bar() + theme_dark() + ylab("Number of Counties") + xlab("Larger Percent of Population") + facet_grid(~Year) 
 ```
 
-Your discussion of plot 2
+Year-to-year, most Texas counties have larger populations of sufficiently active individuals, that is, the percentage of sufficiently active individuals exceeds that of the percentage of obese individuals. As time has progressed, there has been a slight decrease in the amount of counties with larger percentage of sufficiently active individuals in comparison to percentage of obese individuals. This finding is consistent for both males and females.
 
 ```{R}
 health_indicators %>%
   ggplot(aes(`Percent Obese`, fill = Year)) + geom_density() + xlab("Percent of Population Considered Obese") + facet_grid(~Sex)
 ```
+Each distribution of obesity percentage per county has shifted while maintaining a normal distribution and steady increase over time. Males tend to have more counties with larger obese populations, but females tend to have larger obese populations per county.
 
-Your discussion of plot 3
 
 #### Concluding Remarks
 
+I expected there to be progressively higher rates of obesity, but I didn't foresee such high rates of individuals getting sufficient physical activity year-over-year. It would be worth doing follow-up research to see if there were confounding factors to these findings: _- Were physical activity rates self-reported?_
+                           _- Were the same groups measured each year?_
+                           _-Were the sample sizes used unbiased representations of the populations of interest?_
 
 
 
