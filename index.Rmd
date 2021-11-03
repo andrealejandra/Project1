@@ -101,16 +101,51 @@ inner_join(phys, obesity, by=c("Location", "Sex", "Year")) %>%
 
 ```
 
-Because phys and obesity are the same length, I can perform an inner join without losing any data. My life dataset is averages over a span of 25 years, so I will have repeated numbers for each Location after perfoming a left join to the previous inner-joined dataset.
+Because phys and obesity are the same length, I can perform an inner join without losing any data. My life dataset is averages over a span of 25 years, so I will have repeated numbers for each Location after perfoming a left join to the previously inner-joined dataset.
 
 ####  Wrangling
 
 ```{R}
-# your wrangling code
 
-# your wrangling code
+health_indicators %>%
+  na.omit -> health_indicators
+# highest life expectancy
+health_indicators %>%
+  arrange(desc(`Avg Life Expectancy`)) %>%
+  select(1:2, 6) %>%
+  group_by(Location, Sex) %>%
+  filter(Sex=="Male") %>%
+  distinct()
 
-# your wrangling code
+health_indicators %>%
+  arrange(desc(`Avg Life Expectancy`)) %>%
+  select(1:2, 6) %>%
+  group_by(Location, Sex) %>%
+  filter(Sex=="Female") %>%
+  distinct()
+  
+# average obesity rates by year
+health_indicators %>%
+  filter(Location!=c("United States", "Texas")) %>%
+  group_by(Year, Sex) %>%
+  summarize(`Overall Average Percent of Population Considered Obese` = sum(`Percent Obese`)/n(), `Overall Average Percent of Population Considered Sufficiently Active` = sum(`Percent Active`)/n())
+
+# highest performers above the mean
+health_indicators %>%
+  group_by(Location) %>%
+  filter(`Percent Active` > mean(`Percent Active`)) %>%
+  arrange(desc(`Percent Active`))
+
+# how often does active percent exceed obese percent?
+health_indicators %>%
+  mutate(`Higher Percent` = ifelse(`Percent Active` > `Percent Obese`, "Active", "Obese")) -> comparison
+
+comparison %>%
+  filter(`Higher Percent` == "Obese") %>%
+  arrange(desc(`Percent Obese`)) %>%
+  str_match_all("20[0-9]{2}") 
+
+
 ```
 
 Your discussion of wrangling section here. Feel encouraged to break up into more than once code chunk and discuss each in turn.
