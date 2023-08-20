@@ -1,6 +1,6 @@
 ---
 title: 'Project 1: Wrangling, Exploration, Visualization'
-author: "SDS322E"
+author: "Andrea Virgen"
 date: ''
 output:
   html_document:
@@ -15,13 +15,14 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
 tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+
 ```
 
-## Health Indicators in Texas Counties
+# Health Indicators in Texas Counties
 
-### Andrea Virgen AAV782
+## Andrea Virgen
 
-#### Introduction 
+### Introduction 
 
 I'm interested to see how and if there are correlations between rates of obesity and sufficient physical activity in regards to life expectancy. I would infer that counties with the highest rates of obesity would have lower life expectancy, but it remains to be seen if higher rates of sufficient exercise compensates for these rates. The first dataset(phys) shows percentage prevalence of each location's population that achieves a sufficient amount of physical activity - specificity of measurement or sample size is unknown. The second dataset(obesity) shows percentage prevalence of obesity(criteria not given), normalized by age. The final dataset(life) houses life expectancies by county.
 
@@ -41,7 +42,7 @@ life <- read_excel("IHME_county_data_LifeExpectancy_Obesity_PhysicalActivity_TEX
 
 ```
 
-#### Tidying: Reshaping
+### Tidying: Reshaping
 
 Because these datasets have one numeric variable each, I am reshaping them to be combined on the basis of Location, Sex, and Year. The life expectancy(life) dataset was collected from years that do not overlap with the data from the other three datasets, so I will be taking the average from the data available for a later comparison with the other variables.
 
@@ -78,7 +79,7 @@ obesity %>%
 ```
 
     
-#### Joining/Merging
+### Joining/Merging
 
 ```{R}
 inner_join(phys, obesity, by=c("Location", "Sex", "Year")) %>%
@@ -90,7 +91,7 @@ inner_join(phys, obesity, by=c("Location", "Sex", "Year")) %>%
 
 Because phys and obesity are the same length, I can perform an inner join without losing any data. My life dataset is averages over a span of 25 years, so I will have repeated numbers for each Location after perfoming a left join to the previously inner-joined dataset.
 
-####  Wrangling
+###  Wrangling
 
 ```{R}
 
@@ -141,7 +142,7 @@ comparison %>%
 
 
 
-#### Visualizing
+### Visualizing
 
 ```{R}
 health_indicators %>%
@@ -164,7 +165,7 @@ health_indicators %>%
 Each distribution of obesity percentage per county has shifted while maintaining a normal distribution and steady increase over time. Males tend to have more counties with larger obese populations, but females tend to have larger obese populations per county.
 
 
-#### Concluding Remarks
+### Concluding Remarks
 
 I expected there to be progressively higher rates of obesity, but I didn't foresee such high rates of individuals getting sufficient physical activity year-over-year. It would be worth doing follow-up research to see if there were confounding factors to these findings: _- Were physical activity rates self-reported?_
                            _- Were the same groups measured each year?_
