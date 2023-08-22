@@ -1,5 +1,5 @@
 ---
-title: 'Project 1: Wrangling, Exploration, Visualization'
+title: 'Wrangling, Exploration, Visualization'
 author: "Andrea Virgen"
 date: ''
 output:
@@ -18,9 +18,8 @@ tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 
 ```
 
-# Health Indicators in Texas Counties
+# Analysis of Texas Health Indicators
 
-## Andrea Virgen
 
 ### Introduction 
 
